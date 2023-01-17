@@ -1,16 +1,35 @@
-import streamlit as st
 import openai
+import streamlit as st
 
-st.set_page_config(
-    page_title="Summarizer"
-)
+# Get API key
+openai.api_key = st.secrets["openaiKey"]
 
-st.write("# Summarize Text")
+# Create a function that uses GPT to summarize a document
+def summarize_document(prompt, document):
+    completions = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=f"Please summarize the following document: {document} \n{prompt}",
+        max_tokens=1024,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
 
-text = st.text_area(label="Text", height=300, max_chars=4000)
+    message = completions.choices[0].text
+    return message.strip()
 
-if st.button('Summarize'):
-    prompt = "Summarize the main points from the article in less than 120 characters: "
-    response = openai.Completion.create(engine="text-davinci-002", prompt= prompt + text, max_tokens=150)
-    st.write(response['choices'][0]['text'])
+# Create a Streamlit app
+st.set_page_config(page_title="Document Summarizer", page_icon=":guardsman:", layout="wide")
+st.title("Document Summarizer")
 
+# Get document information
+document = st.text_area("Enter the document you want to summarize:", max_chars=1000)
+prompt = st.text_area("Enter any additional information or instructions:", max_chars=1000)
+
+# Use GPT to summarize the legal document
+if st.button("Summarize Document"):
+    summary = summarize_document(prompt, document)
+    st.success("Document summarized!")
+    st.write("```")
+    st.write(summary)
+    st.write("```")

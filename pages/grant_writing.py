@@ -14,5 +14,6 @@ project = st.text_input("Project description: ", disabled=False)
 
 prompt = "Write a grant proposal for " + org + ". They are requesting " + amount + "for " + project
 
-response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=150)
-st.write(response['choices'][0]['text'])
+if st.button('Write'):
+    response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=150)
+    st.write(response['choices'][0]['text'])

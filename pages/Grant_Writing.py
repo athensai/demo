@@ -1,19 +1,36 @@
-import streamlit as st
 import openai
+import streamlit as st
 
-st.set_page_config(
-    page_title="Grant Writing",
-)
-
+# Get API key
 openai.api_key = st.secrets["openaiKey"]
-st.write("# Welcome to Grant Writer!")
 
-org = st.text_input("Organization name: ", disabled=False)
-amount = st.text_input("Amount requested: ", disabled=False)
-project = st.text_input("Project description: ", disabled=False)
+# Create a function that uses GPT to write a grant application
+def write_grant(prompt, organization, grant):
+    completions = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=f"Write a grant application for {organization} for {grant} funding.\n{prompt}",
+        max_tokens=1024,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
 
-prompt = "Write a grant proposal for " + org + ". They are requesting " + amount + "for " + project
+    message = completions.choices[0].text
+    return message.strip()
 
-if st.button('Write'):
-    response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=150)
-    st.write(response['choices'][0]['text'])
+# Create a Streamlit app
+st.set_page_config(page_title="Grant Application Generator", page_icon=":guardsman:", layout="wide")
+st.title("Grant Application Generator")
+
+# Get organization and grant information
+organization = st.text_input("Enter the name of your organization:")
+grant = st.text_input("Enter the name of the grant you are applying for:")
+prompt = st.text_area("Enter any additional information or instructions:")
+
+# Use GPT to write the grant application
+if st.button("Write Grant"):
+    grant_application = write_grant(prompt, organization, grant)
+    st.success("Grant application generated!")
+    st.write("```")
+    st.write(grant_application)
+    st.write("```")

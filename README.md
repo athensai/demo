@@ -1,6 +1,3 @@
-# GPT-3 Streamlit boilerplate
+# Demo of athens.ai
 
-- create virtual environment https://docs.python.org/3/library/venv.html
-- Activate virtual environment: `./venv/Scripts/activate`
-- install dependencies: `pip install -r requirements.txt`
-- Run application `streamlit run gpt_app.py`
+A Streamlit/GPT app to speed grant writing, blog writing, etc. Just a sample of the capabilities that athens.ai can offer your organization
